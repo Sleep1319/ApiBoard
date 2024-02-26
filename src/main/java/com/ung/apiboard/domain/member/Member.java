@@ -33,15 +33,15 @@ public class Member {
     @Column(nullable = false, length = 20)
     private String nickname;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<MemberRole> roles;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Role role;
 
-    public Member(String email, String password, String username, String nickname, List<Role> roles) {
+    public Member(String email, String password, String username, String nickname, Role role) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.nickname = nickname;
-        this.roles = roles.stream().map(r -> new MemberRole(this, r)).collect(Collectors.toSet());
+        this.role = role;
     }
 
 }

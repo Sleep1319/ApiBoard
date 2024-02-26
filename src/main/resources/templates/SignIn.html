@@ -2,9 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>로그인</title>
 </head>
 <body>
-
+<form method="post" action="/api/sign-in">
+    <input type="email" name="email">
+    <input type="password" name="password">
+    <button type="submit">로그인</button>
+</form>
+<a href="/">메인으로 이동</a>
 </body>
+<script>
+    var message = "[[${message}]]";
+    alert(message);
+</script>
 </html>

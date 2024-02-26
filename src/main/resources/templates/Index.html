@@ -8,8 +8,10 @@
 <header>
     <nav>
         <div>
-            <div class="user-info">
-                <span th:text="${user.name}"></span> <span th:text="${user.role}"></span>
+            <div th:if="${session.userInfo != null}" class="user-info">
+                <span th:text="'사용자: '${session.userInfo.username}"></span>
+                <span th:text="'권한: '${session.userInfo.roleName}"></span>
+                <span><a href="/sign-out">로그아웃</a></span>
             </div>
         </div>
     </nav>
