@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>UngBoardMain</title>
+</head>
+<body>
+<header>
+    <nav>
+        <div>
+            <div class="user-info">
+                <span th:text="${user.name}"></span> <span th:text="${user.role}"></span>
+            </div>
+        </div>
+    </nav>
+</header>
+<div style="display: inline-block;">
+    <form action="/sign-in" method="get">
+        <button>로그인</button>
+    </form>
+</div>
+
+<div style="display: inline-block;">
+    <form action="/sign-up" method="get">
+        <button>회원가입</button>
+    </form>
+</div>
+<div style="display: inline-block;">
+    <form action="/board" method="get">
+        <button>게시판</button>
+    </form>
+</div>
+</body>
+</html>

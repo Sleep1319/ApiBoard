@@ -1,0 +1,29 @@
+server:
+  port: 8083
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/UngApiBoard?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: Sleep1205!
+  thymeleaf:
+    cache: false
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+  messages:
+    basename: i18n/exception,i18n/validation
+
+
