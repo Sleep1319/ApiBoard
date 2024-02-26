@@ -27,7 +27,7 @@ public class SignController {
             signService.singUp(req);
             return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/sign-in").build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Location", "/").build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Location", "sign-up").build();
         }
     }
     @PostMapping("/api/sign-in")
