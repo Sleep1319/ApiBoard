@@ -2,6 +2,7 @@ package com.ung.apiboard.dto.sign;
 
 import com.ung.apiboard.domain.member.Member;
 import com.ung.apiboard.domain.member.Role;
+import com.ung.apiboard.domain.member.RoleType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -39,7 +40,7 @@ public class SignUpRequest {
 
     // 비 스태틱 메소드로는 save메소드에서 참조 할 수 없다
     // 데이터 전송의 명확성을 위해 엔티티클래스인 멤버를 쓰지 않고 현재 DTO클래스에 담아서 사용하기 위함
-    public static Member toEntity(SignUpRequest req, Role role) {
-        return new Member(req.email, req.password, req.username, req.nickname, role);
+    public static Member toEntity(SignUpRequest req, RoleType role, PasswordEncoder passwordEncoder) {
+        return new Member(req.email, passwordEncoder.encode(req.password), req.username, req.nickname, role);
     }
 }

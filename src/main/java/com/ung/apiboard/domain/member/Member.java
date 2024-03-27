@@ -24,7 +24,7 @@ public class Member {
     @Column(nullable = true, length = 50, unique = true) //널 제한 길이 50 고유값 설정
     private String email;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 100)
     private String password;
 
     @Column(nullable = false, length = 20)
@@ -33,10 +33,10 @@ public class Member {
     @Column(nullable = false, length = 20)
     private String nickname;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
 
-    public Member(String email, String password, String username, String nickname, Role role) {
+    public Member(String email, String password, String username, String nickname, RoleType role) {
         this.email = email;
         this.password = password;
         this.username = username;

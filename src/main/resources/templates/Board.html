@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <a href="/board/new">
+        <button>글쓰기</button>
+    </a>
+</div>
+<hr>
+<div th:if="${!boardList.isEmpty()}">
+    <table>
+        <tr>
+            <td>제목</td>
+            <td>작성자</td>
+            <td></td>
+        </tr>
+        <tr th:each=" board : ${boardList}">
+            <td th:text="${board.getTitle()}"></td>
+            <td th:text="${board.getMember().getNickname()}"></td>
+            <td><a th:href="'/board/show/' + ${board.getId()}">이동</a></td>
+        </tr>
+    </table>
+    <hr>
+</div>
+<div th:if="${boardList.isEmpty()}">
+    게시글이 없습니다
+</div>
+<a href="/">메인으로 이동</a>
+</body>
+</html>

@@ -9,28 +9,25 @@
     <nav>
         <div>
             <div th:if="${session.userInfo != null}" class="user-info">
-                <span th:text="'사용자: '${session.userInfo.username}"></span>
-                <span th:text="'권한: '${session.userInfo.roleName}"></span>
+                <span th:text="'사용자:' + ${session.userInfo.getUsername()}"></span>
+                <span th:text="'권한:' + ${session.userInfo.getRoleName()}"></span>
                 <span><a href="/sign-out">로그아웃</a></span>
             </div>
         </div>
     </nav>
 </header>
-<div style="display: inline-block;">
-    <form action="/sign-in" method="get">
-        <button>로그인</button>
-    </form>
-</div>
+<div style="display: inline-block;" th:if="${session.userInfo == null}">
+    <a href="/sign-in"><button>로그인</button></a>
+    <a href="/sign-up"><button>회원가입</button></a>
+    </div>
+    <a href="/board"><button>게시판</button></a>
 
-<div style="display: inline-block;">
-    <form action="/sign-up" method="get">
-        <button>회원가입</button>
-    </form>
-</div>
-<div style="display: inline-block;">
-    <form action="/board" method="get">
-        <button>게시판</button>
-    </form>
 </div>
 </body>
+<script>
+    var message = "[[${message}]]";
+    if(message !== null && message !== "") {
+        alert(message);
+    }
+</script>
 </html>
