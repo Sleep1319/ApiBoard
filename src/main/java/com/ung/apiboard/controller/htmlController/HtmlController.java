@@ -3,7 +3,6 @@ package com.ung.apiboard.controller.htmlController;
 import com.ung.apiboard.domain.board.Board;
 import com.ung.apiboard.service.BoardService;
 import jakarta.servlet.http.HttpSession;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,9 +21,11 @@ public class HtmlController {
     private final BoardService boardService;
     @GetMapping("/")
     public String index(@RequestParam(required = false, name = "message") String message, Model model, HttpSession session) {
+        List<Board> boardList = boardService.allBoard();
+        model.addAttribute("boardList", boardList);
         model.addAttribute("userInfo", session.getAttribute("userInfo"));
         model.addAttribute("message", message);
-        return "/Index";
+        return "index";
     }
 
     @GetMapping("/sign-up")
@@ -37,7 +38,7 @@ public class HtmlController {
         if(message != null && !message.isEmpty()) {
         model.addAttribute("message", message);
         }
-        return "/SignUp";
+        return "signUp";
     }
 
     @GetMapping("/sign-in")
@@ -50,29 +51,31 @@ public class HtmlController {
         if(message != null && !message.isEmpty()) {
             model.addAttribute("message", message);
         }
-        return "/SignIn";
+        return "signIn";
     }
 
     @GetMapping("/sign-out")
-    public String signOut(HttpSession session) {
+    public String signOut(HttpSession session) throws UnsupportedEncodingException {
         session.invalidate();
-        return "redirect:/sign-in";
+        String signOut = "로그아웃 성공";
+        String encodedSignOutUser = URLEncoder.encode(signOut, "UTF-8");
+        return "redirect:/sign-in?message=" + encodedSignOutUser;
     }
 
     //게시판
-    @GetMapping("/board")
-    public String board(Model model) {
-        List<Board> boardList = boardService.allBoard();
-        model.addAttribute("boardList", boardList);
-        return "/Board";
-    }
+//    @GetMapping("/board")
+//    public String board(Model model) {
+//        List<Board> boardList = boardService.allBoard();
+//        model.addAttribute("boardList", boardList);
+//        return "/Board";
+//    }
 
     @GetMapping("/board/show/{id}")
     public String selectBoard(@PathVariable Long id, Model model) {
         Optional<Board> findBoard = boardService.selectBoard(id);
         Board board = findBoard.orElse(null);
         model.addAttribute("board", board);
-        return "/Show";
+        return "show";
     }
 
     @GetMapping("/board/new")
@@ -82,6 +85,6 @@ public class HtmlController {
             String encodedSignInUser = URLEncoder.encode(signInUser, "UTF-8");
             return "redirect:/sign-in?message=" + encodedSignInUser;
         }
-        return "/New";
+        return "new";
     }
 }

@@ -3,24 +3,26 @@
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>UngBoardMain</title>
 </head>
 <body>
-<div>
+<div th:replace="layout/navbar :: nav"></div>
+
     <a href="/board/new">
         <button>글쓰기</button>
     </a>
 </div>
-<hr>
 
 <div th:if="${!boardList.isEmpty()}">
     <table class="table table-striped">
         <tr>
+            <td>게시글 번호</td>
             <td>제목</td>
             <td>작성자</td>
             <td></td>
         </tr>
         <tr th:each=" board : ${boardList}">
+            <td th:text="${board.getId()}"></td>
             <td th:text="${board.getTitle()}"></td>
             <td th:text="${board.getMember().getNickname()}"></td>
             <td><a th:href="'/board/show/' + ${board.getId()}"><button type="button" class="btn btn-primary">이동</button></a></td>
@@ -31,6 +33,12 @@
 <div th:if="${boardList.isEmpty()}">
     게시글이 없습니다
 </div>
-<a href="/">메인으로 이동</a>
+
 </body>
+<script>
+    var message = "[[${message}]]";
+    if(message !== null && message !== "") {
+        alert(message);
+    }
+</script>
 </html>

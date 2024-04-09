@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Component
-@Transactional
 @RequiredArgsConstructor
 public class InitDB {
     private final MemberRepository memberRepository;
