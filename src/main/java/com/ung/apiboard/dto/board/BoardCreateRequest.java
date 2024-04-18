@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @Data
@@ -15,7 +17,7 @@ import java.util.Optional;
 public class BoardCreateRequest {
 
     @NotNull
-    private Long id;
+    private Long memberId;
 
     @NotNull
     private String title;
@@ -23,7 +25,9 @@ public class BoardCreateRequest {
     @NotNull
     private String content;
 
-    public static Board toEntity(Member member, BoardCreateRequest req) {
-        return new Board(member, req.title, req.content);
+    private List<MultipartFile> files;
+
+    public static Board toEntity(Member member, BoardCreateRequest req, List<String> fileUrl) {
+        return new Board(member, req.title, req.content, fileUrl);
     }
 }

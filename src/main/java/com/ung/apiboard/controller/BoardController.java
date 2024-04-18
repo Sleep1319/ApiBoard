@@ -3,6 +3,7 @@ package com.ung.apiboard.controller;
 import com.ung.apiboard.dto.board.BoardCreateRequest;
 import com.ung.apiboard.dto.board.BoardUpdateRequest;
 import com.ung.apiboard.exception.BoardNotFoundException;
+import com.ung.apiboard.exception.FileStorageException;
 import com.ung.apiboard.exception.UnauthorizedBoardAccessException;
 import com.ung.apiboard.service.BoardService;
 import jakarta.validation.Valid;
@@ -22,6 +23,9 @@ public class BoardController {
         String message;
         try {
             boardService.create(req);
+        } catch (FileStorageException e) {
+            message = "파일 등록 에러";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         } catch (Exception e) {
             message = "등록중 에러 발생";
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);

@@ -1,7 +1,9 @@
 package com.ung.apiboard.controller.htmlController;
 
 import com.ung.apiboard.domain.board.Board;
+import com.ung.apiboard.domain.board.Comment;
 import com.ung.apiboard.service.BoardService;
+import com.ung.apiboard.service.CommentService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class HtmlController {
     private final BoardService boardService;
+    private final CommentService commentService;
+
     @GetMapping("/")
     public String index(@RequestParam(required = false, name = "message") String message, Model model, HttpSession session) {
         List<Board> boardList = boardService.allBoard();
@@ -63,18 +67,13 @@ public class HtmlController {
     }
 
     //게시판
-//    @GetMapping("/board")
-//    public String board(Model model) {
-//        List<Board> boardList = boardService.allBoard();
-//        model.addAttribute("boardList", boardList);
-//        return "/Board";
-//    }
-
     @GetMapping("/board/show/{id}")
     public String selectBoard(@PathVariable Long id, Model model) {
         Optional<Board> findBoard = boardService.selectBoard(id);
+        List<Comment> commentList = commentService.findCommentByBoardId(id);
         Board board = findBoard.orElse(null);
         model.addAttribute("board", board);
+        model.addAttribute("commentList", commentList);
         return "show";
     }
 

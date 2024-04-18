@@ -12,7 +12,9 @@ import com.ung.apiboard.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,10 +24,20 @@ import java.util.Optional;
 public class BoardService {
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    private final FileStorageService fileStorageService;
 
     public void create(BoardCreateRequest req) {
-        boardRepository.save(BoardCreateRequest.toEntity(memberRepository.findById(req.getId()).orElseThrow(MemberNotFoundException :: new), req));
-
+        List<String> filePaths = new ArrayList<>();
+        List<MultipartFile> files = req.getFiles();
+        if (files != null && !files.isEmpty()) {
+            for (MultipartFile file : files) {
+                String filePath = fileStorageService.storeFile(file);
+                filePaths.add(filePath);
+            }
+        }
+        boardRepository.save(
+                BoardCreateRequest.toEntity(
+                        memberRepository.findById(req.getMemberId()).orElseThrow(MemberNotFoundException :: new), req, filePaths));
     }
 
 
@@ -45,7 +57,7 @@ public class BoardService {
     }
 
     private void validateBoard(BoardUpdateRequest req, Board board) {
-        if(!Objects.equals(req.getId(), board.getMember().getId())) {
+        if(!Objects.equals(req.getMemberId(), board.getMember().getId())) {
             throw new UnauthorizedBoardAccessException();
         }
 

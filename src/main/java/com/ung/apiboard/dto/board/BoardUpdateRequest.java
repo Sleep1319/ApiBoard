@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -12,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class BoardUpdateRequest {
 
     @NotNull
-    private Long id;
+    private Long memberId;
 
     @NotNull
     private Long boardId;
@@ -22,6 +25,9 @@ public class BoardUpdateRequest {
 
     @NotNull
     private String content;
+
+    private List<MultipartFile> files;
+
 
 
 }

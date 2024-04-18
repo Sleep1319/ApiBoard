@@ -1,39 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:replace="layout/header :: head">
     <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <title>Title</title>
+    <title>newBoard</title>
 </head>
 <body>
 <div th:replace="layout/navbar :: nav"></div>
 
-<div id="createBoardForm">
+<form id="createBoardForm">
     <div class="mb-3">
         <label for="createTitle" class="form-label">제목</label>
         <input type="text" class="form-control" id="createTitle" name="title">
     </div>
     <div class="mb-3">
         <label for="createTitle" class="form-label">내용</label>
-        <textarea class="form-control" id="createContent" name="content" aria-label="With textarea"></textarea>
+        <textarea class="form-control" id="createContent" name="content" rows="10" aria-label="With textarea"></textarea>
+    </div>
+    <div>
+        <label for="uploadFiles" class="form-label">이미지</label>
+        <input type="file" class="form-control" id="uploadFiles" name="files">
     </div>
     <button type="button" class="btn btn-primary" onclick="createBoard()">작성</button>
-</div>
+</form>
 <a href="/">메인 이동</a>
 </body>
 <script>
     function createBoard() {
-        var formData = {
-            id: [[${session.userInfo.getId()}]],
-            title: document.getElementById("createBoardForm").querySelector('input[name="title"]').value,
-            content: document.getElementById("createBoardForm").querySelector('textarea[name="content"]').value
-        };
+        var formData = new FormData();
+        formData.append("memberId", document.getElementById("memberId").value);
+        formData.append("title", document.getElementById("title").value);
+        formData.append("content", document.getElementById("content").value);
+
+        var fileInput = document.getElementById('fileInput');
+        for (var i = 0; i < fileInput.files.length; i++) {
+            formData.append("files", fileInput.files[i]);
+        }
+        // var formData = {
+        //     memberId: [[${session.userInfo.getId()}]],
+        //     title: document.getElementById("createBoardForm").querySelector('input[name="title"]').value,
+        //     content: document.getElementById("createBoardForm").querySelector('textarea[name="content"]').value,
+        // };
         fetch("/api/board/new", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(formData)
+            // headers: { //파일 등록으로 인하여 json설정 제외
+            //     "Content-Type": "application/json"
+            // },
+             body: formData //JSON.stringify(formData)
         })
             .then(function (response) {
                 if (response.ok) {
