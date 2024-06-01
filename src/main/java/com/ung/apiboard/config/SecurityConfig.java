@@ -31,7 +31,8 @@ public class SecurityConfig {
                         AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/sign-up/**"),
                         AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/api/sign-up"),
                         AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/sign-in/**"),
-                        AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/api/sign-in")
+                        AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/api/sign-in"),
+                        AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/api/board/new")
                                 ).permitAll()
                                 .anyRequest().permitAll()//일단 모든 요청에 권한 해제
 

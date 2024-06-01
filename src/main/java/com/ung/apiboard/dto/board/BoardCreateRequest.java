@@ -1,6 +1,7 @@
 package com.ung.apiboard.dto.board;
 
 import com.ung.apiboard.domain.board.Board;
+import com.ung.apiboard.domain.board.Images;
 import com.ung.apiboard.domain.member.Member;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -25,9 +26,9 @@ public class BoardCreateRequest {
     @NotNull
     private String content;
 
-    private List<MultipartFile> files;
 
-    public static Board toEntity(Member member, BoardCreateRequest req, List<String> fileUrl) {
-        return new Board(member, req.title, req.content, fileUrl);
+
+    public static Board toEntity(Member member, BoardCreateRequest req) {
+        return new Board(member, req.title, req.content);
     }
 }

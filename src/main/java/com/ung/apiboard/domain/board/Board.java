@@ -19,7 +19,7 @@ public class Board {
     @Column(name = "board_id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -35,17 +35,17 @@ public class Board {
      * 이 방식은 부모 엔티티에 대한 자식 엔티티의 관계를 관리하기 위한 것이며, 각 자식 엔티티는 부모 엔티티에 대한 참조
      * 엔티티를 참조하여 별도의 테이블을 만드는 것과 유사
      */
-    @ElementCollection
-    private List<String> filePaths = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Images> uploadImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
 
-    public Board(Member member, String title, String content, List<String> filePaths) {
+    public Board(Member member, String title, String content) {
         this.member = member;
         this.title = title;
         this.content = content;
-        this.filePaths = filePaths;
     }
 }

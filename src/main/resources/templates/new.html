@@ -7,7 +7,8 @@
 <body>
 <div th:replace="layout/navbar :: nav"></div>
 
-<form id="createBoardForm">
+<form id="createBoardForm" method="post" action="/board/new" enctype="multipart/form-data">
+    <input type="hidden" name="memberId" th:value="${session.userInfo.id}">
     <div class="mb-3">
         <label for="createTitle" class="form-label">제목</label>
         <input type="text" class="form-control" id="createTitle" name="title">
@@ -20,47 +21,35 @@
         <label for="uploadFiles" class="form-label">이미지</label>
         <input type="file" class="form-control" id="uploadFiles" name="files">
     </div>
-    <button type="button" class="btn btn-primary" onclick="createBoard()">작성</button>
+    <button type="submit" class="btn btn-primary" >작성</button>
 </form>
 <a href="/">메인 이동</a>
 </body>
 <script>
-    function createBoard() {
-        var formData = new FormData();
-        formData.append("memberId", document.getElementById("memberId").value);
-        formData.append("title", document.getElementById("title").value);
-        formData.append("content", document.getElementById("content").value);
+    // 폼 제출 시 실행되는 함수
+    document.getElementById("createBoardForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // 기본 동작 중단
 
-        var fileInput = document.getElementById('fileInput');
-        for (var i = 0; i < fileInput.files.length; i++) {
-            formData.append("files", fileInput.files[i]);
-        }
-        // var formData = {
-        //     memberId: [[${session.userInfo.getId()}]],
-        //     title: document.getElementById("createBoardForm").querySelector('input[name="title"]').value,
-        //     content: document.getElementById("createBoardForm").querySelector('textarea[name="content"]').value,
-        // };
+        var formData = new FormData(this); // 폼 데이터 생성
+
         fetch("/api/board/new", {
             method: "POST",
-            // headers: { //파일 등록으로 인하여 json설정 제외
-            //     "Content-Type": "application/json"
-            // },
-             body: formData //JSON.stringify(formData)
+            body: formData // 폼 데이터 전송
         })
             .then(function (response) {
                 if (response.ok) {
-                    alert("글 작성 성공")
-                    window.location.href = "/";
+                    alert("글 작성 성공");
+                    window.location.href = "/"; // 성공 시 메인 페이지로 이동
                 } else {
                     response.text()
                         .then(function (message) {
-                            alert("작성 실패" + message)
+                            alert("작성 실패" + message);
                         });
                 }
             })
             .catch(function (error) {
-                alert("요청 에러 발생")
+                alert("요청 에러 발생");
             });
-    }
+    });
 </script>
 </html>

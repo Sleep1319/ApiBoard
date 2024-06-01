@@ -10,33 +10,35 @@
 
     <div class="card">
         <div class="card-header">
-            Board
+            [[${board.getTitle()}]]
         </div>
         <div class="card-body">
             <div class="mb-3">
-                <label class="form-label" for="updateTitle">제목</label>
-                <input class="form-control" id="updateTitle" name="title" readonly th:value="${board.getTitle()}"
-                       type="text">
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="updateTitle">내용</label>
-                <textarea aria-label="With textarea" class="form-control" id="updateContent" name="content" readonly>[[${board.getContent()}]]
+                <textarea aria-label="With textarea" class="form-control" id="updateContent" name="content" rows="10" style="background-color: transparent;" readonly>[[${board.getContent()}]]
         </textarea>
+                <div th:if="${!imageListInfo.isEmpty()}">
+                    <div th:each="imagesInfo : ${imageListInfo}">
+                        <img th:src="@{/images/{imagesName}(imagesName = ${imagesInfo.getStoredFileName()})}">
+                    </div>
+                </div>
             </div>
 
-            <input class="form-control" id="boardId" name="boardId" readonly th:value="${board.getId()}" type="text">
+            <input class="form-control" id="boardId" name="boardId" readonly th:value="${board.getId()}" type="hidden">
 
             <div class="mb-3">
                 <label class="form-label" for="nickname">작성자 닉네임</label>
                 <input class="form-control" id="nickname" name="nickname" readonly
                        th:value="${board.getMember().getNickname()}" type="text">
             </div>
-
-            <div th:if="${session.userInfo.getId().equals(board.getMember().getId())}">
-                <button class="btn btn-info" id="readOnlyButton" type="button">수정</button>
-                <button class="btn btn-primary" onclick="updateBoard()" style="display: none" type="button">확인</button>
-                <button class="btn btn-primary" onclick="resetPage()" style="display: none" type="button">취소</button>
-            </div>
+                <div th:if="${session.userInfo != null && session.userInfo.getId().equals(board.getMember().getId())}">
+                    <button class="btn btn-info" id="readOnlyButton" type="button">수정</button>
+                    <button class="btn btn-primary" onclick="updateBoard()" style="display: none" type="button">확인
+                    </button>
+                    <button class="btn btn-primary" onclick="resetPage()" style="display: none" type="button">취소
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteBoard()" style="display: none" type="button">삭제
+                    </button>
+                </div>
         </div>
     </div>
 
@@ -78,14 +80,16 @@
 <script>
     var readOnlyButton = document.getElementById('readOnlyButton');
     var hiddenButtons = document.getElementsByClassName('btn btn-primary');
+    var hiddenDeleteButton = document.getElementsByClassName('btn btn-danger')[0];
     var updateTitle = document.getElementById('updateTitle');
     var updateContent = document.getElementById("updateContent");
 
     readOnlyButton.addEventListener('click', function () {
-        updateTitle.readOnly = false;
+        updateTitle.readOnly = false
         updateContent.readOnly = false;
-
         readOnlyButton.style.display = 'none';
+
+        hiddenDeleteButton.style.display = 'inline';
 
         for (var j = 0; j < hiddenButtons.length; j++) {
             hiddenButtons[j].style.display = 'inline';
@@ -98,7 +102,7 @@
 
     function updateBoard() {
         var formData = {
-            memberId: [[${session.userInfo.id}]],
+            memberId: [[${session.userInfo?.id}]],
             boardId: document.getElementById("boardForm").querySelector('input[name="boardId"]').value,
             title: document.getElementById("boardForm").querySelector('input[name="title"]').value,
             content: document.getElementById("boardForm").querySelector('textarea[name="content"]').value
@@ -126,9 +130,38 @@
             });
     }
 
+    function deleteBoard() {
+        var formData = {
+            memberId: [[${session.userInfo?.id}]],
+            boardId: document.getElementById("boardForm").querySelector('input[name="boardId"]').value
+        };
+
+        fetch("/api/board/delete", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(function (response){
+                if(response.ok) {
+                    alert("삭제 성공")
+                    window.location.href = "/";
+                } else {
+                    response.text()
+                        .then(function (message) {
+                            alert("삭제실패: " + message)
+                        });
+                }
+            })
+            .catch(function (error) {
+                alert("요청 에러 발생")
+            });
+    }
+
     function createCommentRequest() {
         var formData = {
-            memberId: [[${session.userInfo.id}]],
+            memberId: [[${session.userInfo?.id}]],
             boardId: document.getElementById("boardForm").querySelector('input[name="boardId"]').value,
             comment: document.getElementById("commentForm").querySelector('textarea[name="comment"]').value
         };

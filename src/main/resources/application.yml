@@ -18,16 +18,22 @@ spring:
       hibernate:
         format_sql: true
 
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
   servlet:
     multipart:
       max-file-size: 30MB
       max-request-size: 30MB
       file-size-threshold: 0
+      enabled: true
+      location: C:\Users\cjsdn\JpaIntelliJ\ApiBoard\src\main\resources\static\images
 
   messages:
     basename: i18n/exception,i18n/validation
 
-file:
-  upload-dir: /static/files
 
 

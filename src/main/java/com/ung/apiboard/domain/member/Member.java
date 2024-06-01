@@ -1,11 +1,13 @@
 package com.ung.apiboard.domain.member;
 
+import com.ung.apiboard.domain.board.Board;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,6 +37,9 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private RoleType role;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Board> boards = new ArrayList<>();
 
     public Member(String email, String password, String username, String nickname, RoleType role) {
         this.email = email;

@@ -35,6 +35,6 @@ public class InitDB {
     }
 
     public void initTestBoard() {
-        boardRepository.save( new Board(memberRepository.findById(1L).orElseThrow(MemberNotFoundException :: new), "테스트 제목", "테스트 내용", null));
+        boardRepository.save( new Board(memberRepository.findById(1L).orElseThrow(MemberNotFoundException :: new), "테스트 제목", "테스트 내용"));
     }
 }

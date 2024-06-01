@@ -1,4 +1,4 @@
-package com.ung.apiboard.controller;
+package com.ung.apiboard.controller.board;
 
 import com.ung.apiboard.dto.board.CommentCreateRequest;
 import com.ung.apiboard.exception.BoardNotFoundException;
