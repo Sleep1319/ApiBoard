@@ -71,7 +71,7 @@ public class BoardService {
     public void update(BoardUpdateRequest req) {
         Board board = boardRepository.findById(req.getBoardId()).orElseThrow(BoardNotFoundException::new);
         validateBoard(req.getMemberId(), board);
-        boardRepository.updateBoard(board.getId(), req.getTitle(), req.getContent());
+        boardRepository.updateBoard(board.getId(), req.getContent());
     }
 
     @Transactional
