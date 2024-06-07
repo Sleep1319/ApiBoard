@@ -49,10 +49,15 @@
         <div class="card-body">
             <div id="commentForm">
                 <textarea class="form-control" id="createComment" name="comment" rows="3"></textarea>
+                <div th:if="${session.userInfo != null}">
                 <button class="btn btn-primary" id="createCommentButton" onclick="createCommentRequest()" type="button">
                     작성
                 </button>
                 <button class="btn btn-primary" onclick="resetPage()" type="button">취소</button>
+                </div>
+                <div th:if="${session.userInfo == null}">
+                    댓글은 로그인 후 작성 가능합니다.
+                </div>
             </div>
         </div>
     </div>
@@ -63,12 +68,14 @@
         </div>
         <div class="card-body">
             <div th:each="comment : ${commentList}">
-                <input type="hidden" id="hiddenCommentId" th:value="${comment.getId()}">
-                <label class="form-label" for="comment">[[${comment.member.nickname}]]</label>
-                <p id="comment">[[${comment.comment}]]</p>
-                <div th:if="${session.userInfo != null && session.userInfo.getId().equals(board.getMember().getId()) || session.userInfo.getId().equals(comment.member.id)}">
-                    <button class="btn btn-warning" onclick="deleteComment()" type="button">삭제
-                    </button>
+                <div class="commentContainer">
+<!--                    <input id="hiddenCommentId" th:value="${comment.getId()}" type="hidden">-->
+                    <label class="form-label" for="comment">[[${comment.member.nickname}]]</label>
+                    <p id="comment">[[${comment.comment}]]</p>
+                    <div th:if="${session.userInfo != null && session.userInfo.getId().equals(board.getMember().getId()) || session.userInfo.getId().equals(comment.member.id)}">
+                        <button class="btn btn-warning" onclick="deleteComment('[[${comment.id}]]')" type="button">삭제
+                        </button>
+                    </div>
                 </div>
             </div>
             <div th:if="${commentList.isEmpty()}">
@@ -205,11 +212,13 @@
             });
     }
 
-    function deleteComment() {
+    function deleteComment(id) {
+        console.log("삭제할 댓글의 ID:", id);
+
         var formData = {
             memberId: [[${session.userInfo?.id}]],
             boardId: document.getElementById("boardForm").querySelector('input[name="boardId"]').value,
-            commentId: document.getElementById("boardForm").querySelector('input[name="hiddenCommentId"]').value
+            commentId: id
         };
 
         fetch("/api/comment/delete", {
