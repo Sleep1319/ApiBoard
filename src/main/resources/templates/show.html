@@ -69,11 +69,11 @@
         <div class="card-body">
             <div th:each="comment : ${commentList}">
                 <div class="commentContainer">
-<!--                    <input id="hiddenCommentId" th:value="${comment.getId()}" type="hidden">-->
+                    <input id="hiddenCommentId" name="commentId" th:value="${comment.getId()}" type="hidden">
                     <label class="form-label" for="comment">[[${comment.member.nickname}]]</label>
                     <p id="comment">[[${comment.comment}]]</p>
                     <div th:if="${session.userInfo != null && session.userInfo.getId().equals(board.getMember().getId()) || session.userInfo.getId().equals(comment.member.id)}">
-                        <button class="btn btn-warning" onclick="deleteComment('[[${comment.id}]]')" type="button">삭제
+                        <button class="btn btn-warning" onclick="deleteComment()" type="button">삭제
                         </button>
                     </div>
                 </div>
@@ -212,7 +212,8 @@
             });
     }
 
-    function deleteComment(id) {
+    function deleteComment() {
+        var id = document.querySelector('input[name="commentId"]').value;
         console.log("삭제할 댓글의 ID:", id);
 
         var formData = {
@@ -231,7 +232,7 @@
             .then(function (response){
                 if(response.ok) {
                     alert("댓글 삭제 성공")
-                    window.location.href = "/";
+                    window.location.reload();
                 } else {
                     response.text()
                         .then(function (message) {
