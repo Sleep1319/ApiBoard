@@ -3,6 +3,7 @@ package com.ung.apiboard.service;
 import com.ung.apiboard.domain.board.Board;
 import com.ung.apiboard.domain.board.Images;
 import com.ung.apiboard.dto.board.BoardCreateRequest;
+import com.ung.apiboard.dto.board.BoardDTO;
 import com.ung.apiboard.dto.board.BoardDeleteRequest;
 import com.ung.apiboard.dto.board.BoardUpdateRequest;
 import com.ung.apiboard.exception.*;
@@ -11,6 +12,10 @@ import com.ung.apiboard.repository.ImagesRepository;
 import com.ung.apiboard.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,8 +64,13 @@ public class BoardService {
     }
 
 
-    public List<Board> allBoard() {
-        return boardRepository.findAll();
+    public Page<BoardDTO> allBoard(Pageable pageable) {
+        int page = pageable.getPageNumber() -1;
+        int pageLimit = 5;
+
+        Page<Board> boardPages = boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+
+        return boardPages.map(BoardDTO::new);
     }
 
     public Optional<Board> selectBoard(Long id) {

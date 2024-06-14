@@ -3,8 +3,9 @@ package com.ung.apiboard.service;
 import com.ung.apiboard.domain.board.Board;
 import com.ung.apiboard.domain.board.Comment;
 import com.ung.apiboard.domain.member.Member;
-import com.ung.apiboard.dto.board.CommentCreateRequest;
-import com.ung.apiboard.dto.board.CommentDeleteRequest;
+import com.ung.apiboard.dto.comment.CommentCreateRequest;
+import com.ung.apiboard.dto.comment.CommentDTO;
+import com.ung.apiboard.dto.comment.CommentDeleteRequest;
 import com.ung.apiboard.exception.BoardNotFoundException;
 import com.ung.apiboard.exception.CommentNotFoundException;
 import com.ung.apiboard.exception.MemberNotFoundException;
@@ -13,6 +14,10 @@ import com.ung.apiboard.repository.BoardRepository;
 import com.ung.apiboard.repository.CommentRepository;
 import com.ung.apiboard.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +31,13 @@ public class CommentService {
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
 
-    public List<Comment> findCommentByBoardId(Long boardId) {
-        return commentRepository.findByBoardId_Id(boardId);
+    public Page<CommentDTO> allComment(Long boardId , Pageable pageable) {
+        int page = pageable.getPageNumber() -1;
+        int pageLimit = 3; //임시 3
+
+        Page<Comment> commentPage = commentRepository.findByBoardId_Id(boardId, PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+
+        return commentPage.map(CommentDTO :: new);
     }
 
     @Transactional

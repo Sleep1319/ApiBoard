@@ -7,12 +7,12 @@
 <body>
 <div th:replace="layout/navbar :: nav"></div>
 
-    <a href="/board/new">
-        <button>글쓰기</button>
-    </a>
+<a href="/board/new">
+    <button>글쓰기</button>
+</a>
 </div>
 
-<div th:if="${!postsPages.isEmpty()}">
+<div th:if="${!boardList.isEmpty()}">
     <table class="table table-striped">
         <tr>
             <td>게시글 번호</td>
@@ -20,42 +20,46 @@
             <td>작성자</td>
             <td></td>
         </tr>
-        <tr th:each=" board : ${postsPages}">
+        <tr th:each=" board : ${boardList}">
             <td th:text="${board.getId()}"></td>
             <td th:text="${board.getTitle()}"></td>
             <td th:text="${board.getMember().getNickname()}"></td>
-            <td><a th:href="'/board/show/' + ${board.getId()}"><button type="button" class="btn btn-primary">이동</button></a></td>
+            <td><a th:href="'/board/show/' + ${board.getId()}">
+                <button class="btn btn-primary" type="button">이동</button>
+            </a></td>
         </tr>
     </table>
 
-    <!-- 첫번째 페이지로 이동 -->
-    <a th:href="@{/(page=1)}">첫 페이지 </a>
+    <div th:if="${boardList.totalPages > 1}">
+        <!-- 첫번째 페이지로 이동 -->
+        <a th:href="@{/(page=1)}">첫 페이지 </a>
 
-    <!-- 페이지 번호 링크(현재 페이지는 숫자만)
-            for(int page=startPage; page<=endPage; page++)-->
-    <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
+        <!-- 페이지 번호 링크(현재 페이지는 숫자만)
+                for(int page=startPage; page<=endPage; page++)-->
+        <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
 
 		<!-- 현재페이지는 링크 없이 숫자만 -->
-            <span th:if="${page == postsPages.number + 1}" th:text="${page}"></span>
-        <!-- 현재페이지 링크 X, 다른 페이지번호에는 링크를 보여준다 -->
-            <span th:unless="${page == postsPages.number + 1}">
+            <span th:if="${page == boardList.number + 1}" th:text="${page}"></span>
+            <!-- 현재페이지 링크 X, 다른 페이지번호에는 링크를 보여준다 -->
+            <span th:unless="${page == boardList.number + 1}">
         <a th:href="@{/(page=${page})}" th:text="${page}"></a>
             </span>
         </span>
 
-    <!-- 마지막 페이지로 이동 -->
-    <a th:href="@{/(page=${postsPages.totalPages})}"> 마지막 페이지</a>
+        <!-- 마지막 페이지로 이동 -->
 
+        <a th:href="@{/(page=${boardList.totalPages})}"> 마지막 페이지</a>
+    </div>
     <hr>
 </div>
-<div th:if="${postsPages.isEmpty()}">
+<div th:if="${boardList.isEmpty()}">
     게시글이 없습니다
 </div>
 
 </body>
 <script>
     var message = "[[${message}]]";
-    if(message !== null && message !== "") {
+    if (message !== null && message !== "") {
         alert(message);
     }
 </script>

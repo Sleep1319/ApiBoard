@@ -14,7 +14,8 @@
         </div>
         <div class="card-body">
             <div class="mb-3">
-                <textarea aria-label="With textarea" class="form-control" id="updateContent" name="content" rows="10" style="background-color: transparent;" readonly>[[${board.getContent()}]]
+                <textarea aria-label="With textarea" class="form-control" id="updateContent" name="content" readonly
+                          rows="10" style="background-color: transparent;">[[${board.getContent()}]]
         </textarea>
                 <div th:if="${!imageListInfo.isEmpty()}">
                     <div th:each="imagesInfo : ${imageListInfo}">
@@ -30,15 +31,15 @@
                 <input class="form-control" id="nickname" name="nickname" readonly
                        th:value="${board.getMember().getNickname()}" type="text">
             </div>
-                <div th:if="${session.userInfo != null && session.userInfo.getId().equals(board.getMember().getId())}">
-                    <button class="btn btn-info" id="readOnlyButton" type="button">수정</button>
-                    <button class="btn btn-primary" onclick="updateBoard()" style="display: none" type="button">확인
-                    </button>
-                    <button class="btn btn-primary" onclick="resetPage()" style="display: none" type="button">취소
-                    </button>
-                    <button class="btn btn-danger" onclick="deleteBoard()" style="display: none" type="button">삭제
-                    </button>
-                </div>
+            <div th:if="${session.userInfo != null && session.userInfo.getId().equals(board.getMember().getId())}">
+                <button class="btn btn-info" id="readOnlyButton" type="button">수정</button>
+                <button class="btn btn-primary" onclick="updateBoard()" style="display: none" type="button">확인
+                </button>
+                <button class="btn btn-primary" onclick="resetPage()" style="display: none" type="button">취소
+                </button>
+                <button class="btn btn-danger" onclick="deleteBoard()" style="display: none" type="button">삭제
+                </button>
+            </div>
         </div>
     </div>
 
@@ -50,10 +51,11 @@
             <div id="commentForm">
                 <textarea class="form-control" id="createComment" name="comment" rows="3"></textarea>
                 <div th:if="${session.userInfo != null}">
-                <button class="btn btn-primary" id="createCommentButton" onclick="createCommentRequest()" type="button">
-                    작성
-                </button>
-                <button class="btn btn-primary" onclick="resetPage()" type="button">취소</button>
+                    <button class="btn btn-primary" id="createCommentButton" onclick="createCommentRequest()"
+                            type="button">
+                        작성
+                    </button>
+                    <button class="btn btn-primary" onclick="resetPage()" type="button">취소</button>
                 </div>
                 <div th:if="${session.userInfo == null}">
                     댓글은 로그인 후 작성 가능합니다.
@@ -77,6 +79,23 @@
                         </button>
                     </div>
                 </div>
+            </div>
+            <div th:if="${commentList.totalPages > 1}">
+                <!-- 첫번째 페이지로 이동 -->
+                <a th:href="@{'/board/show/' + ${board.getId()}(page=1)}">첫 페이지 </a>
+
+                <!-- 페이지 번호 링크(현재 페이지는 숫자만)-->
+                <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
+
+		<!-- 현재페이지는 링크 없이 숫자만 -->
+            <span th:if="${page == commentList.number + 1}" th:text="${page}"></span>
+                    <!-- 현재페이지 링크 X, 다른 페이지번호에는 링크를 보여준다 -->
+            <span th:unless="${page == commentList.number + 1}">
+        <a th:href="@{'/board/show/' + ${board.getId()}(page=${page})}" th:text="${page}"></a>
+            </span>
+        </span>
+                <!-- 마지막 페이지로 이동 -->
+                <a th:href="@{'/board/show/' + ${board.getId()}(page=${commentList.totalPages})}"> 마지막 페이지</a>
             </div>
             <div th:if="${commentList.isEmpty()}">
                 작성된 댓글이 없습니다
@@ -156,8 +175,8 @@
             },
             body: JSON.stringify(formData)
         })
-            .then(function (response){
-                if(response.ok) {
+            .then(function (response) {
+                if (response.ok) {
                     alert("삭제 성공")
                     window.location.href = "/";
                 } else {
@@ -176,7 +195,7 @@
         var loginCheck = [[${session.userInfo?.id}]]
 
         //안먹힘
-        if(!loginCheck) {
+        if (!loginCheck) {
             alert("로그인 후 이용 가능합니다 로그인 페이지로 이동합니다");
             window.location.href = "/sign-in";
         }
@@ -215,10 +234,11 @@
     function deleteComment() {
         var id = document.querySelector('input[name="commentId"]').value;
         console.log("삭제할 댓글의 ID:", id);
+        var boardId = [[${board.id}]];
 
         var formData = {
             memberId: [[${session.userInfo?.id}]],
-            boardId: document.getElementById("boardForm").querySelector('input[name="boardId"]').value,
+            boardId: boardId,
             commentId: id
         };
 
@@ -229,10 +249,10 @@
             },
             body: JSON.stringify(formData)
         })
-            .then(function (response){
-                if(response.ok) {
+            .then(function (response) {
+                if (response.ok) {
                     alert("댓글 삭제 성공")
-                    window.location.reload();
+                    window.location.href= '/board/show/' + boardId;
                 } else {
                     response.text()
                         .then(function (message) {

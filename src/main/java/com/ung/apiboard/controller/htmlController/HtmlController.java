@@ -1,14 +1,12 @@
 package com.ung.apiboard.controller.htmlController;
 
 import com.ung.apiboard.domain.board.Board;
-import com.ung.apiboard.domain.board.Comment;
 import com.ung.apiboard.domain.board.Images;
 import com.ung.apiboard.dto.board.BoardDTO;
-import com.ung.apiboard.repository.ImagesRepository;
+import com.ung.apiboard.dto.comment.CommentDTO;
 import com.ung.apiboard.service.BoardService;
 import com.ung.apiboard.service.CommentService;
 import com.ung.apiboard.service.ImagesService;
-import com.ung.apiboard.service.PageService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,26 +29,20 @@ public class HtmlController {
     private final BoardService boardService;
     private final ImagesService imagesService;
     private final CommentService commentService;
-    private final PageService pageService;
 
     //페이징 수정
     @GetMapping("/")
     public String index(@RequestParam(required = false, name = "message") String message, Model model, HttpSession session,
                         @PageableDefault(page = 1)Pageable pageable) {
-        Page<BoardDTO> postsPages = pageService.paging(pageable);
+        Page<BoardDTO> boardList = boardService.allBoard(pageable);
 
         int blockLimit = 3;
         int startPage = (((int) Math.ceil(((double) pageable.getPageNumber()/ blockLimit))) -1 ) * blockLimit + 1;
-        int endPage = Math.min((startPage + blockLimit - 1), postsPages.getTotalPages());
+        int endPage = Math.min((startPage + blockLimit - 1), boardList.getTotalPages());
 
-        model.addAttribute("postsPages", postsPages);
+        model.addAttribute("boardList", boardList);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-
-//        List<Board> boardList = boardService.allBoard();
-//        model.addAttribute("boardList", boardList);
-//        model.addAttribute("userInfo", session.getAttribute("userInfo"));
-//        model.addAttribute("message", message);
         return "index";
     }
 
@@ -90,14 +82,23 @@ public class HtmlController {
 
     //게시판
     @GetMapping("/board/show/{id}")
-    public String selectBoard(@PathVariable Long id, Model model) {
+    public String selectBoard(@PathVariable Long id, Model model,
+                              @PageableDefault(page = 1)Pageable pageable) {
         Optional<Board> findBoard = boardService.selectBoard(id);
         List<Images> imageList = imagesService.findImages(id);
-        List<Comment> commentList = commentService.findCommentByBoardId(id);
+
+        Page<CommentDTO> commentList = commentService.allComment(id, pageable);
+
+        int blockLimit = 3;
+        int startPage = (((int) Math.ceil(((double) pageable.getPageNumber()/ blockLimit))) -1 ) * blockLimit + 1;
+        int endPage = Math.min((startPage + blockLimit - 1), commentList.getTotalPages());
+
         Board board = findBoard.orElse(null);
         model.addAttribute("board", board);
         model.addAttribute("imageListInfo", imageList);
         model.addAttribute("commentList", commentList);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
         return "show";
     }
 

@@ -1,4 +1,4 @@
-package com.ung.apiboard.dto.board;
+package com.ung.apiboard.dto.comment;
 
 import com.ung.apiboard.domain.board.Board;
 import com.ung.apiboard.domain.board.Comment;

@@ -1,12 +1,11 @@
 package com.ung.apiboard.controller.board;
 
-import com.ung.apiboard.dto.board.CommentCreateRequest;
-import com.ung.apiboard.dto.board.CommentDeleteRequest;
+import com.ung.apiboard.dto.comment.CommentCreateRequest;
+import com.ung.apiboard.dto.comment.CommentDeleteRequest;
 import com.ung.apiboard.exception.BoardNotFoundException;
 import com.ung.apiboard.exception.CommentNotFoundException;
 import com.ung.apiboard.exception.MemberNotFoundException;
 import com.ung.apiboard.exception.UnauthorizedCommentAccessException;
-import com.ung.apiboard.repository.CommentRepository;
 import com.ung.apiboard.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
